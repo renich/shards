@@ -11,7 +11,7 @@ Welcome! This document serves as a generalized reference for AI agents collabora
 ## 🛑 General Mandates & Workflow
 
 ### Deterministic Collaboration Protocol (DCP)
-To eliminate AI-generated review fatigue, prevent workspace pollution, and avoid using maintainers as human compilers, all work must follow this strict three-phase process:
+Based on the principles outlined in ["Collaboration in the age of AI"](https://forum.crystal-lang.org/t/collaboration-in-the-age-of-ai/9051), all development work must follow this strict three-phase process to eliminate AI-generated review fatigue, prevent workspace pollution, and avoid using maintainers as human compilers:
 1. **Context Before Code (The Consensus Engine)**: Before modifying any code, ingest the relevant module's commit history, closed PRs, and rejected architectural designs. Understand *why* the codebase is currently structured this way, and synthesize the architectural consensus to route around historical landmines.
 2. **Invariants First (The Adversarial Shift)**: Never submit full implementations to see what sticks. First, write an isolated, failing spec or benchmark that mathematically proves the existence of the bug, performance issue, or security flaw. Once the human reviewer agrees the test boundaries are valid and the spec *should* pass, proceed to submit the minimal fix.
 3. **Strict Ecosystem Compliance (Zero-Friction Integration)**: Treat codebase conventions as rigid APIs. Ensure all changes comply 100% with the repository layout, formatting (`crystal tool format`), lint rules (`ameba`), and testing macros. Workspace pollution (e.g. leftover diff patches, execution logs, binary artifacts) is strictly forbidden. Align pull requests with the maintainer's operational cadence.
