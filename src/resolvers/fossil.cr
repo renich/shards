@@ -114,18 +114,20 @@ module Shards
 
     protected def self.has_fossil_command?
       if @@has_fossil_command.nil?
-        @@has_fossil_command = (Process.run("fossil version", shell: true).success? rescue false)
+        @@has_fossil_command = (Process.run("fossil", ["version"]).success? rescue false)
       end
       @@has_fossil_command
     end
 
     protected def self.fossil_version
       unless @@fossil_version
-        @@fossil_version = `fossil version`[/version\s+([^\s]*)/, 1]
-        pieces = @@fossil_version.not_nil!.split('.')
-        @@fossil_version_maj = pieces[0].to_i8
-        @@fossil_version_min = pieces[1].to_i8
-        @@fossil_version_rev = (pieces[2]?.try &.to_i8 || 0i8)
+        if version_match = `fossil version`[/version\s+([^\s]*)/, 1]?
+          @@fossil_version = version_match
+          pieces = version_match.split('.')
+          @@fossil_version_maj = pieces[0].to_i8
+          @@fossil_version_min = pieces[1].to_i8
+          @@fossil_version_rev = (pieces[2]?.try &.to_i8 || 0i8)
+        end
       end
 
       @@fossil_version
@@ -133,17 +135,17 @@ module Shards
 
     protected def self.fossil_version_maj
       self.fossil_version unless @@fossil_version_maj
-      @@fossil_version_maj.not_nil!
+      @@fossil_version_maj || 0i8
     end
 
     protected def self.fossil_version_min
       self.fossil_version unless @@fossil_version_min
-      @@fossil_version_min.not_nil!
+      @@fossil_version_min || 0i8
     end
 
     protected def self.fossil_version_rev
       self.fossil_version unless @@fossil_version_rev
-      @@fossil_version_rev.not_nil!
+      @@fossil_version_rev || 0i8
     end
 
     def read_spec(version : Version) : String?
@@ -459,7 +461,7 @@ module Shards
     end
 
     private def capture(command, path = local_path)
-      run(command, capture: true, path: path).not_nil!
+      run(command, capture: true, path: path).to_s
     end
 
     private def run(command, path = local_path, capture = false)
@@ -482,7 +484,8 @@ module Shards
       STDERR.flush
       output = capture ? IO::Memory.new : Process::Redirect::Close
       error = IO::Memory.new
-      status = Process.run(command, shell: true, output: output, error: error)
+      args = Process.parse_arguments(command)
+      status = Process.run(args[0], args[1..], output: output, error: error)
 
       if status.success?
         output.to_s if capture
