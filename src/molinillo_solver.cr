@@ -165,7 +165,7 @@ module Shards
     end
 
     def name_for(spec : Shards::Spec)
-      spec.resolver.not_nil!.name
+      spec.resolver.try(&.name) || ""
     end
 
     def name_for(dependency : Shards::Dependency)
