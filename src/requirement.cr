@@ -1,9 +1,29 @@
 module Shards
+  alias ParsedPatternTuple = Tuple(Symbol, String, String)
+
   struct VersionReq
     getter patterns : Array(String)
+    getter parsed_patterns : Array(ParsedPatternTuple)
 
     def initialize(patterns)
       @patterns = patterns.split(',', remove_empty: true).map &.strip
+      @parsed_patterns = @patterns.map do |pattern|
+        case pattern
+        when "*", ""
+          {:any, "", ""}
+        when /~>\s*([^\s]+)\d*/
+          ver = if idx = $1.rindex('.')
+                  $1[0...idx]
+                else
+                  $1
+                end
+          {:approximate, $1, ver}
+        when /\s*(~>|>=|<=|!=|>|<|=)\s*([^~<>=!\s]+)\s*/
+          {:operator, $1, $2}
+        else
+          {:operator, "=", pattern}
+        end
+      end
     end
 
     def prerelease?
