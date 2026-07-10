@@ -95,16 +95,16 @@ module Shards
 
         @up_to_date = false
 
-        @output << "  * " << package.name
-        @output << " (installed: " << resolver.report_version(installed)
+        @output << "  * " << package.name.colorize.mode(:bold).toggle(Shards.colors?)
+        @output << " (installed: " << resolver.report_version(installed).colorize(:light_red).toggle(Shards.colors?)
 
         unless installed == available_version
-          @output << ", available: " << resolver.report_version(available_version)
+          @output << ", available: " << resolver.report_version(available_version).colorize(:light_yellow).toggle(Shards.colors?)
         end
 
         # also report latest version:
         if latest_release && Versions.compare(latest_release, available_version) < 0
-          @output << ", latest: " << resolver.report_version(latest_release)
+          @output << ", latest: " << resolver.report_version(latest_release).colorize(:light_green).toggle(Shards.colors?)
         end
 
         @output.puts ')'
