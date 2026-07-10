@@ -54,7 +54,17 @@ module Shards
     end
 
     def install_path
-      File.join(Shards.install_path, name)
+      path = Path[Shards.install_path, name].expand
+      base_path = Path[Shards.install_path].expand.to_s
+      {% if flag?(:win32) %}
+        base_path += "\\" unless base_path.ends_with?("\\")
+      {% else %}
+        base_path += "/" unless base_path.ends_with?("/")
+      {% end %}
+      unless path.to_s.starts_with?(base_path)
+        raise Error.new("Invalid package name: #{name}")
+      end
+      path.to_s
     end
 
     def install
