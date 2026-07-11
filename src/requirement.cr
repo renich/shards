@@ -1,9 +1,43 @@
 module Shards
+  enum PatternKind
+    Any
+    Approximate
+    Operator
+  end
+
+  struct ParsedPattern
+    getter kind : PatternKind
+    getter op : String
+    getter req : String
+
+    def initialize(@kind : PatternKind, @op : String, @req : String)
+    end
+  end
+
   struct VersionReq
     getter patterns : Array(String)
+    getter parsed_patterns : Array(ParsedPattern)
 
     def initialize(patterns)
       @patterns = patterns.split(',', remove_empty: true).map &.strip
+      @parsed_patterns = @patterns.map do |pattern|
+        case pattern
+        when "*", ""
+          ParsedPattern.new(PatternKind::Any, "", "")
+        when /~>\s*([^\s]+)\d*/
+          req = $1
+          ver = if idx = req.rindex('.')
+                  req[0...idx]
+                else
+                  req
+                end
+          ParsedPattern.new(PatternKind::Approximate, req, ver)
+        when /\s*(~>|>=|<=|!=|>|<|=)\s*([^~<>=!\s]+)\s*/
+          ParsedPattern.new(PatternKind::Operator, $1, $2)
+        else
+          ParsedPattern.new(PatternKind::Operator, "=", pattern)
+        end
+      end
     end
 
     def prerelease?
