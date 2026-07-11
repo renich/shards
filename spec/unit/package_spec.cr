@@ -81,5 +81,48 @@ module Shards
 
       File.symlink?(install_path("library")).should be_true
     end
+
+    it "prevents path traversal during executable installation" do
+      package = Package.new("library", resolver("library"), version "1.2.3")
+      package.install
+
+      # Create a dummy executable with a path traversal name
+      exe_name = "../../traversal_exe"
+
+      # The package file structure looks like:
+      # .lib/library/bin
+      # .lib/library/shard.yml
+      # .lib/traversal_exe
+
+      # Since each_executable_path does:
+      # yield Path["bin", exe] # => bin/../../traversal_exe => ../traversal_exe
+      # yield Path["bin", name] # => bin/../../traversal_exe => ../traversal_exe
+      # We need to put the file where it will be found.
+      # The check is: File.exists?(install_path.join(path))
+      # install_path = /app/spec/unit/.lib/library
+      # path = ../traversal_exe
+      # So we need it at: /app/spec/unit/.lib/traversal_exe
+
+      File.touch(install_path("..", "traversal_exe"))
+
+      # Overwrite the spec to have this malicious executable
+      File.open(install_path("library", "shard.yml"), "w") do |f|
+        f.puts "name: library"
+        f.puts "version: 1.2.3"
+        f.puts "executables:"
+        f.puts "  - #{exe_name}"
+      end
+
+      # We need to recreate the package to reload the spec since it's cached
+      package2 = Package.new("library", resolver("library"), version "1.2.3")
+
+      # Ensure install_path directory exists for the test executable resolving
+      Dir.mkdir_p(install_path("library"))
+      File.touch(install_path("traversal_exe"))
+
+      expect_raises(Shards::Error, /Invalid executable path/) do
+        package2.install_executables
+      end
+    end
   end
 end
