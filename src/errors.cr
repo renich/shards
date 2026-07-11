@@ -61,7 +61,7 @@ module Shards
         (column_number - 1).times { s << ' ' }
         s << '^'
       end
-      io.puts arrow.colorize(:green).bold
+      io.puts arrow.colorize(:green).toggle(Shards.colors?).bold
       io.puts
 
       io.flush
