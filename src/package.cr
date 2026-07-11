@@ -124,6 +124,25 @@ module Shards
           end
           Log.debug { "Install #{exe_name}" }
           source = File.join(install_path, exe_name)
+
+          expanded_source = Path[source].expand.to_s
+          expanded_install_path = Path[install_path].expand.to_s
+          separator = File::SEPARATOR.to_s
+
+          unless expanded_install_path.ends_with?(separator)
+            expanded_install_path += separator
+          end
+
+          {% if flag?(:win32) %}
+            unless expanded_source.downcase.starts_with?(expanded_install_path.downcase)
+              raise Shards::Error.new("Invalid executable path: #{exe_name.inspect}")
+            end
+          {% else %}
+            unless expanded_source.starts_with?(expanded_install_path)
+              raise Shards::Error.new("Invalid executable path: #{exe_name.inspect}")
+            end
+          {% end %}
+
           destination = File.join(Shards.bin_path, File.basename(exe_name))
 
           if File.exists?(destination)
@@ -142,7 +161,7 @@ module Shards
 
     def find_executable_file(install_path, name)
       each_executable_path(name) do |path|
-        return path if File.exists?(install_path.join(path))
+        return path if File.exists?(install_path.join(path).expand.to_s)
       end
     end
 
