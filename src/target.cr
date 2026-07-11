@@ -1,4 +1,14 @@
 module Shards
+  # Represents a build target in a `shard.yml` file.
+  #
+  # A target describes an executable to be built by Shards, including its
+  # name and the path to its main Crystal source file.
+  #
+  # ```
+  # target = Shards::Target.new("my_app", "src/main.cr")
+  # target.name # => "my_app"
+  # target.main # => "src/main.cr"
+  # ```
   class Target
     property name : String
     property main : String
