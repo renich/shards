@@ -1,9 +1,13 @@
 module Shards
   struct VersionReq
+    alias Condition = Tuple(String, String, String?)
+
     getter patterns : Array(String)
+    getter parsed_patterns : Array(Condition)
 
     def initialize(patterns)
       @patterns = patterns.split(',', remove_empty: true).map &.strip
+      @parsed_patterns = @patterns.map { |pattern| Versions.parse_single_pattern(pattern) }
     end
 
     def prerelease?
