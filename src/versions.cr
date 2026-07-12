@@ -170,27 +170,44 @@ module Shards
       versions.select { |version| matches?(version, requirement) }
     end
 
-    def self.matches?(version : Version, requirement : VersionReq)
-      requirement.patterns.all? do |pattern|
-        matches_single_pattern?(version, pattern)
+    protected def self.parse_single_pattern(pattern : String) : VersionReq::Condition
+      case pattern
+      when "*", ""
+        {"any", "", nil}
+      when /~>\s*([^\s]+)\d*/
+        req = $1
+        ver = if idx = req.rindex('.')
+                req[0...idx]
+              else
+                req
+              end
+        {"~>", req, ver}
+      when /\s*(~>|>=|<=|!=|>|<|=)\s*([^~<>=!\s]+)\s*/
+        {$1, $2, nil}
+      else
+        {"=", pattern, nil}
       end
     end
 
-    private def self.matches_single_pattern?(version : Version, pattern : String)
-      case pattern
-      when "*", ""
+    def self.matches?(version : Version, requirement : VersionReq)
+      requirement.parsed_patterns.all? do |condition|
+        matches_condition?(version, condition)
+      end
+    end
+
+    private def self.matches_condition?(version : Version, condition : VersionReq::Condition)
+      op, req, ver = condition
+      case op
+      when "any"
         true
-      when /~>\s*([^\s]+)\d*/
-        ver = if idx = $1.rindex('.')
-                $1[0...idx]
-              else
-                $1
-              end
-        matches_approximate?(version.value, $1, ver)
-      when /\s*(~>|>=|<=|!=|>|<|=)\s*([^~<>=!\s]+)\s*/
-        matches_operator?(version.value, $1, $2)
+      when "~>"
+        if v = ver
+          matches_approximate?(version.value, req, v)
+        else
+          matches_operator?(version.value, op, req)
+        end
       else
-        matches_operator?(version.value, "=", pattern)
+        matches_operator?(version.value, op, req)
       end
     end
 
