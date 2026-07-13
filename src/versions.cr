@@ -171,26 +171,32 @@ module Shards
     end
 
     def self.matches?(version : Version, requirement : VersionReq)
-      requirement.patterns.all? do |pattern|
-        matches_single_pattern?(version, pattern)
+      requirement.conditions.all? do |cond|
+        matches_single_condition?(version, cond)
       end
     end
 
-    private def self.matches_single_pattern?(version : Version, pattern : String)
-      case pattern
-      when "*", ""
+    private def self.matches_single_condition?(version : Version, cond : VersionReq::Condition)
+      case cond.op
+      when VersionReq::Op::Any
         true
-      when /~>\s*([^\s]+)\d*/
-        ver = if idx = $1.rindex('.')
-                $1[0...idx]
-              else
-                $1
-              end
-        matches_approximate?(version.value, $1, ver)
-      when /\s*(~>|>=|<=|!=|>|<|=)\s*([^~<>=!\s]+)\s*/
-        matches_operator?(version.value, $1, $2)
+      when VersionReq::Op::Approximate
+        prefix = cond.prefix.as(String)
+        matches_approximate?(version.value, cond.val, prefix)
+      when VersionReq::Op::GreaterOrEqual
+        compare(version.value, cond.val) <= 0
+      when VersionReq::Op::LessOrEqual
+        compare(version.value, cond.val) >= 0
+      when VersionReq::Op::Greater
+        compare(version.value, cond.val) < 0
+      when VersionReq::Op::Less
+        compare(version.value, cond.val) > 0
+      when VersionReq::Op::NotEqual
+        compare(version.value, cond.val) != 0
+      when VersionReq::Op::Equal
+        compare(version.value, cond.val) == 0
       else
-        matches_operator?(version.value, "=", pattern)
+        false
       end
     end
 
