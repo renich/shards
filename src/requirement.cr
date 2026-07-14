@@ -1,9 +1,30 @@
 module Shards
   struct VersionReq
+    alias ParsedPattern = {Symbol, String, String}
+
     getter patterns : Array(String)
+    getter parsed_patterns : Array(ParsedPattern)
 
     def initialize(patterns)
       @patterns = patterns.split(',', remove_empty: true).map &.strip
+      @parsed_patterns = @patterns.map do |pattern|
+        case pattern
+        when "*", ""
+          {:any, "", ""}
+        when /~>\s*([^\s]+)\d*/
+          req = $1
+          ver = if idx = req.rindex('.')
+                  req[0...idx]
+                else
+                  req
+                end
+          {:approx, req, ver}
+        when /\s*(~>|>=|<=|!=|>|<|=)\s*([^~<>=!\s]+)\s*/
+          {:op, $1, $2}
+        else
+          {:op, "=", pattern}
+        end
+      end
     end
 
     def prerelease?
