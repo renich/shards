@@ -54,7 +54,15 @@ module Shards
     end
 
     def install_path
-      File.join(Shards.install_path, name)
+      base_path = Path[Shards.install_path].expand
+      normalized_name = name.gsub('\\', '/')
+      expanded_path = Path[Shards.install_path, normalized_name].expand
+
+      unless expanded_path.to_s.starts_with?(base_path.to_s + File::SEPARATOR)
+        raise Error.new("Invalid package name: #{name.inspect} (path traversal detected)")
+      end
+
+      expanded_path.to_s
     end
 
     def install
