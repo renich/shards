@@ -84,6 +84,26 @@ module Shards
       end
     end
 
+    # Sorts an array of versions in descending order (newest first).
+    #
+    # The versions are compared using natural sorting logic that correctly
+    # handles version segments (e.g., `1.10.0` is newer than `1.9.0`), as well as
+    # prereleases (e.g., `1.0.0-rc.1` is older than `1.0.0`).
+    #
+    # Note that `Shards::Versions.compare(a, b)` returns `1` when `a` is older than `b`
+    # and `-1` when `a` is newer than `b`. This means standard sorting results
+    # in the newest versions first.
+    #
+    # Parameters:
+    # - *versions*: An array of version strings or `Shards::Version` objects to be sorted.
+    #
+    # Returns a new array with the versions sorted in descending order.
+    #
+    # ```
+    # versions = ["1.0.0", "2.0.0", "1.2.0"]
+    # sorted = Shards::Versions.sort(versions)
+    # sorted # => ["2.0.0", "1.2.0", "1.0.0"]
+    # ```
     def self.sort(versions)
       versions.sort { |a, b| compare(a, b) }
     end
