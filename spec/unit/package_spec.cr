@@ -81,5 +81,15 @@ module Shards
 
       File.symlink?(install_path("library")).should be_true
     end
+
+    it "prevents path traversal in find_executable_file" do
+      package = Package.new("library", resolver("library"), version "1.2.3")
+      package.install
+
+      install_dir = Path[package.install_path]
+      expect_raises(Shards::Error, /Path traversal detected/) do
+        package.find_executable_file(install_dir, "../../../../../etc/passwd")
+      end
+    end
   end
 end

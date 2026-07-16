@@ -141,8 +141,15 @@ module Shards
     end
 
     def find_executable_file(install_path, name)
+      expanded_install_path = install_path.expand
+
       each_executable_path(name) do |path|
-        return path if File.exists?(install_path.join(path))
+        full_path = install_path.join(path).expand
+        unless full_path.parents.includes?(expanded_install_path)
+          raise Shards::Error.new("Path traversal detected: executable #{name.inspect} resolves outside of installation directory")
+        end
+
+        return path if File.exists?(full_path)
       end
     end
 
