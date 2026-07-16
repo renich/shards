@@ -171,49 +171,31 @@ module Shards
     end
 
     def self.matches?(version : Version, requirement : VersionReq)
-      requirement.patterns.all? do |pattern|
-        matches_single_pattern?(version, pattern)
+      requirement.conditions.all? do |condition|
+        matches_condition?(version, condition)
       end
     end
 
-    private def self.matches_single_pattern?(version : Version, pattern : String)
-      case pattern
-      when "*", ""
+    private def self.matches_condition?(version : Version, condition : VersionReq::Condition)
+      case condition.operator
+      in .any?
         true
-      when /~>\s*([^\s]+)\d*/
-        ver = if idx = $1.rindex('.')
-                $1[0...idx]
-              else
-                $1
-              end
-        matches_approximate?(version.value, $1, ver)
-      when /\s*(~>|>=|<=|!=|>|<|=)\s*([^~<>=!\s]+)\s*/
-        matches_operator?(version.value, $1, $2)
-      else
-        matches_operator?(version.value, "=", pattern)
-      end
-    end
-
-    private def self.matches_approximate?(version, requirement, ver)
-      version.starts_with?(ver) &&
-        !version[ver.size]?.try(&.ascii_alphanumeric?) &&
-        (compare(version, requirement) <= 0)
-    end
-
-    private def self.matches_operator?(version, operator, requirement)
-      case operator
-      when ">="
-        compare(version, requirement) <= 0
-      when "<="
-        compare(version, requirement) >= 0
-      when ">"
-        compare(version, requirement) < 0
-      when "<"
-        compare(version, requirement) > 0
-      when "!="
-        compare(version, requirement) != 0
-      else
-        compare(version, requirement) == 0
+      in .approximate?
+        version.value.starts_with?(condition.ver) &&
+          !version.value[condition.ver.size]?.try(&.ascii_alphanumeric?) &&
+          (compare(version.value, condition.requirement) <= 0)
+      in .greater_than_or_equal_to?
+        compare(version.value, condition.requirement) <= 0
+      in .less_than_or_equal_to?
+        compare(version.value, condition.requirement) >= 0
+      in .greater_than?
+        compare(version.value, condition.requirement) < 0
+      in .less_than?
+        compare(version.value, condition.requirement) > 0
+      in .not_equal?
+        compare(version.value, condition.requirement) != 0
+      in .equal?
+        compare(version.value, condition.requirement) == 0
       end
     end
   end
