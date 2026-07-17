@@ -32,12 +32,12 @@ module Shards
     message = entry.message
     package_name = entry.context[:package]?
     if @@colors
-      io << "[" << package_name.colorize(:blue).to_s << "] " if package_name && entry.severity <= ::Log::Severity::Debug
+      io << "[" << package_name.colorize(:blue).toggle(Shards.colors?).to_s << "] " if package_name && entry.severity <= ::Log::Severity::Debug
       io << if color = LOGGER_COLORS[entry.severity]?
         if idx = message.index(' ')
-          message[0...idx].colorize(color).to_s + message[idx..-1]
+          message[0...idx].colorize(color).toggle(Shards.colors?).to_s + message[idx..-1]
         else
-          message.colorize(color)
+          message.colorize(color).toggle(Shards.colors?)
         end
       else
         message

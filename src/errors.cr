@@ -53,15 +53,17 @@ module Shards
       from = 0 if from < 0
 
       lines[from...line_number].each_with_index do |line, i|
-        io.puts "  #{from + i + 1}. #{line}"
+        io.puts "  #{(from + i + 1).to_s.rjust(line_number.to_s.size)}. #{line}"
       end
 
       arrow = String.build do |s|
-        s << "     "
+        s << "  "
+        s << " " * line_number.to_s.size
+        s << "  "
         (column_number - 1).times { s << ' ' }
         s << '^'
       end
-      io.puts arrow.colorize(:green).bold
+      io.puts arrow.colorize(:green).toggle(Shards.colors?).bold
       io.puts
 
       io.flush
