@@ -13,6 +13,7 @@ repository: https://github.com/crystal-lang/shards
 dependencies:
   molinillo:
     github: crystal-lang/crystal-molinillo
+    version: ~> 0.2.2
 
 targets:
   shards:
