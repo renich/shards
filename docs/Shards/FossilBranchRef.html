@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Crystal Docs 1.20.3">
+<meta name="crystal_docs.project_version" content="jules-14256626685587067570-cdbd826a">
+<meta name="crystal_docs.project_name" content="shards">
+
+
+
+<link href="../css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="../js/doc.js"></script>
+
+  <meta name="repository-name" content="shards">
+  <title>Shards::FossilBranchRef - shards jules-14256626685587067570-cdbd826a</title>
+  <script type="text/javascript">
+    CrystalDocs.base_path = "../";
+  </script>
+</head>
+<body>
+
+<svg class="hidden">
+  <symbol id="octicon-link" viewBox="0 0 16 16">
+    <path fill="currentColor" fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path>
+  </symbol>
+</svg>
+<input type="checkbox" id="sidebar-btn">
+<label for="sidebar-btn" id="sidebar-btn-label">
+  <svg class="open" xmlns="http://www.w3.org/2000/svg" height="2em" width="2em" viewBox="0 0 512 512"><title>Open Sidebar</title><path fill="currentColor" d="M80 96v64h352V96H80zm0 112v64h352v-64H80zm0 112v64h352v-64H80z"></path></svg>
+  <svg class="close" xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 512 512"><title>Close Sidebar</title><path fill="currentColor" d="m118.6 73.4-45.2 45.2L210.7 256 73.4 393.4l45.2 45.2L256 301.3l137.4 137.3 45.2-45.2L301.3 256l137.3-137.4-45.2-45.2L256 210.7Z"></path></svg>
+</label>
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="search-box">
+      <input type="search" class="search-input" placeholder="Search..." spellcheck="false" aria-label="Search">
+    </div>
+
+    <div class="project-summary">
+      <h1 class="project-name">
+        <a href="../index.html">
+          shards
+        </a>
+      </h1>
+
+      <span class="project-version">
+        jules-14256626685587067570-cdbd826a
+      </span>
+    </div>
+  </div>
+
+  <div class="search-results hidden">
+    <ul class="search-list"></ul>
+  </div>
+
+  <div class="types-list">
+    <ul>
+
+  <li class="parent open current" data-id="shards/Shards" data-name="shards">
+      <a href="../Shards.html">Shards</a>
+
+        <ul>
+
+  <li class=" " data-id="shards/Shards/Any" data-name="shards::any">
+      <a href="../Shards/Any.html">Any</a>
+
+    </li>
+
+  <li class=" " data-id="shards/Shards/Command" data-name="shards::command">
+      <a href="../Shards/Command.html">Command</a>
+
+    </li>
+
+  <li class="parent " data-id="shards/Shards/Commands" data-name="shards::commands">
+      <a href="../Shards/Commands.html">Commands</a>
+
+        <ul>
+
+  <li class=" " data-id="shards/Shards/Commands/Build" data-name="shards::commands::build">
+      <a href="../Shards/Commands/Build.html">Build</a>
+
+    </li>
+
+  <li class=" " data-id="shards/Shards/Commands/Check" data-name="shards::commands::check">
+      <a href="../Shards/Commands/Check.html">Check</a>
+
+    </li>
+
+  <li class=" " data-id="shards/Shards/Commands/Init" data-name="shards::commands::init">
+      <a href="../Shards/Commands/Init.html">Init</a>
+
+    </li>
+
+  <li class=" " data-id="shards/Shards/Commands/Install" data-name="shards::commands::install">
+      <a href="../Shards/Commands/Install.html">Install</a>
+
+    </li>
+
+  <li class=" " data-id="shards/Shards/Commands/List" data-name="shards::commands::list">
+      <a href="../Shards/Commands/List.html">List</a>
+
+    </li>
+
+  <li class=" " data-id="shards/Shards/Commands/Lock" data-name="shards::commands::lock">
+      <a href="../Shards/Commands/Lock.html">Lock</a>
+
+    </li>
+
+  <li class=" " data-id="shards/Shards/Commands/Outdated" data-name="shards::commands::outdated">
+      <a href="../Shards/Commands/Outdated.html">Outdated</a>
+
+    </li>
+
+  <li class=" " data-id="shards/Shards/Commands/Prune" data-name="shards::commands::prune">
+      <a href="../Shards/Commands/Prune.html">Prune</a>
+
+    </li>
+
+  <li class=" " data-id="shards/Shards/Commands/Run" data-name="shards::commands::run">
+      <a href="../Shards/Commands/Run.html">Run</a>
+
+    </li>
+
+  <li class=" " data-id="shards/Shards/Commands/Update" data-name="shards::commands::update">
+      <a href="../Shards/Commands/Update.html">Update</a>
+
+    </li>
+
+  <li class=" " data-id="shards/Shards/Commands/Version" data-name="shards::commands::version">
+      <a href="../Shards/Commands/Version.html">Version</a>
+
+    </li>
+
+</ul>
+
+
+    </li>
+
+  <li class=" " data-id="shards/Shards/Conflict" data-name="shards::conflict">
+      <a href="../Shards/Conflict.html">Conflict</a>
+
+    </li>
+
+  <li class=" " data-id="shards/Shards/CrystalResolver" data-name="shards::crystalresolver">
+      <a href="../Shards/CrystalResolver.html">CrystalResolver</a>
+
+    </li>
+
+  <li class=" " data-id="shards/Shards/Dependency" data-name="shards::dependency">
+      <a href="../Shards/Dependency.html">Dependency</a>
+
+    </li>
+
+  <li class=" " data-id="shards/Shards/Error" data-name="shards::error">
+      <a href="../Shards/Error.html">Error</a>
+
+    </li>
+
+  <li class=" current" data-id="shards/Shards/FossilBranchRef" data-name="shards::fossilbranchref">
+      <a href="../Shards/FossilBranchRef.html">FossilBranchRef</a>
+
+    </li>
+
+  <li class=" " data-id="shards/Shards/FossilCommitRef" data-name="shards::fossilcommitref">
+      <a href="../Shards/FossilCommitRef.html">FossilCommitRef</a>
+
+    </li>
+
+  <li class=" " data-id="shards/Shards/FossilRef" data-name="shards::fossilref">
+      <a href="../Shards/FossilRef.html">FossilRef</a>
+
+    </li>
+
+  <li class="parent " data-id="shards/Shards/FossilResolver" data-name="shards::fossilresolver">
+      <a href="../Shards/FossilResolver.html">FossilResolver</a>
+
+        <ul>
+
+  <li class=" " data-id="shards/Shards/FossilResolver/FossilVersion" data-name="shards::fossilresolver::fossilversion">
+      <a href="../Shards/FossilResolver/FossilVersion.html">FossilVersion</a>
+
+    </li>
+
+</ul>
+
+
+    </li>
+
+  <li class=" " data-id="shards/Shards/FossilTagRef" data-name="shards::fossiltagref">
+      <a href="../Shards/FossilTagRef.html">FossilTagRef</a>
+
+    </li>
+
+  <li class=" " data-id="shards/Shards/FossilTrunkRef" data-name="shards::fossiltrunkref">
+      <a href="../Shards/FossilTrunkRef.html">FossilTrunkRef</a>
+
+    </li>
+
+  <li class=" " data-id="shards/Shards/GitBranchRef" data-name="shards::gitbranchref">
+      <a href="../Shards/GitBranchRef.html">GitBranchRef</a>
+
+    </li>
+
+  <li class=" " data-id="shards/Shards/GitCommitRef" data-name="shards::gitcommitref">
+      <a href="../Shards/GitCommitRef.html">GitCommitRef</a>
+
+    </li>
+
+  <li class=" " data-id="shards/Shards/GitHeadRef" data-name="shards::githeadref">
+      <a href="../Shards/GitHeadRef.html">GitHeadRef</a>
+
+    </li>
+
+  <li class=" " data-id="shards/Shards/GitRef" data-name="shards::gitref">
+      <a href="../Shards/GitRef.html">GitRef</a>
+
+    </li>
+
+  <li class="parent " data-id="shards/Shards/GitResolver" data-name="shards::gitresolver">
+      <a href="../Shards/GitResolver.html">GitResolver</a>
+
+        <ul>
+
+  <li class=" " data-id="shards/Shards/GitResolver/GitVersion" data-name="shards::gitresolver::gitversion">
+      <a href="../Shards/GitResolver/GitVersion.html">GitVersion</a>
+
+    </li>
+
+</ul>
+
+
+    </li>
+
+  <li class=" " data-id="shards/Shards/GitTagRef" data-name="shards::gittagref">
+      <a href="../Shards/GitTagRef.html">GitTagRef</a>
+
+    </li>
+
+  <li class=" " data-id="shards/Shards/Helpers" data-name="shards::helpers">
+      <a href="../Shards/Helpers.html">Helpers</a>
+
+    </li>
+
+  <li class=" " data-id="shards/Shards/HgBookmarkRef" data-name="shards::hgbookmarkref">
+      <a href="../Shards/HgBookmarkRef.html">HgBookmarkRef</a>
+
+    </li>
+
+  <li class=" " data-id="shards/Shards/HgBranchRef" data-name="shards::hgbranchref">
+      <a href="../Shards/HgBranchRef.html">HgBranchRef</a>
+
+    </li>
+
+  <li class=" " data-id="shards/Shards/HgCommitRef" data-name="shards::hgcommitref">
+      <a href="../Shards/HgCommitRef.html">HgCommitRef</a>
+
+    </li>
+
+  <li class=" " data-id="shards/Shards/HgCurrentRef" data-name="shards::hgcurrentref">
+      <a href="../Shards/HgCurrentRef.html">HgCurrentRef</a>
+
+    </li>
+
+  <li class=" " data-id="shards/Shards/HgRef" data-name="shards::hgref">
+      <a href="../Shards/HgRef.html">HgRef</a>
+
+    </li>
+
+  <li class="parent " data-id="shards/Shards/HgResolver" data-name="shards::hgresolver">
+      <a href="../Shards/HgResolver.html">HgResolver</a>
+
+        <ul>
+
+  <li class=" " data-id="shards/Shards/HgResolver/HgVersion" data-name="shards::hgresolver::hgversion">
+      <a href="../Shards/HgResolver/HgVersion.html">HgVersion</a>
+
+    </li>
+
+</ul>
+
+
+    </li>
+
+  <li class=" " data-id="shards/Shards/HgTagRef" data-name="shards::hgtagref">
+      <a href="../Shards/HgTagRef.html">HgTagRef</a>
+
+    </li>
+
+  <li class=" " data-id="shards/Shards/Info" data-name="shards::info">
+      <a href="../Shards/Info.html">Info</a>
+
+    </li>
+
+  <li class=" " data-id="shards/Shards/InvalidLock" data-name="shards::invalidlock">
+      <a href="../Shards/InvalidLock.html">InvalidLock</a>
+
+    </li>
+
+  <li class=" " data-id="shards/Shards/Lock" data-name="shards::lock">
+      <a href="../Shards/Lock.html">Lock</a>
+
+    </li>
+
+  <li class=" " data-id="shards/Shards/LockConflict" data-name="shards::lockconflict">
+      <a href="../Shards/LockConflict.html">LockConflict</a>
+
+    </li>
+
+  <li class=" " data-id="shards/Shards/MolinilloSolver" data-name="shards::molinillosolver">
+      <a href="../Shards/MolinilloSolver.html">MolinilloSolver</a>
+
+    </li>
+
+  <li class=" " data-id="shards/Shards/Override" data-name="shards::override">
+      <a href="../Shards/Override.html">Override</a>
+
+    </li>
+
+  <li class=" " data-id="shards/Shards/Package" data-name="shards::package">
+      <a href="../Shards/Package.html">Package</a>
+
+    </li>
+
+  <li class=" " data-id="shards/Shards/ParseError" data-name="shards::parseerror">
+      <a href="../Shards/ParseError.html">ParseError</a>
+
+    </li>
+
+  <li class=" " data-id="shards/Shards/PathResolver" data-name="shards::pathresolver">
+      <a href="../Shards/PathResolver.html">PathResolver</a>
+
+    </li>
+
+  <li class=" " data-id="shards/Shards/Ref" data-name="shards::ref">
+      <a href="../Shards/Ref.html">Ref</a>
+
+    </li>
+
+  <li class=" " data-id="shards/Shards/Requirement" data-name="shards::requirement">
+      <a href="../Shards/Requirement.html">Requirement</a>
+
+    </li>
+
+  <li class=" " data-id="shards/Shards/Resolver" data-name="shards::resolver">
+      <a href="../Shards/Resolver.html">Resolver</a>
+
+    </li>
+
+  <li class="parent " data-id="shards/Shards/Script" data-name="shards::script">
+      <a href="../Shards/Script.html">Script</a>
+
+        <ul>
+
+  <li class=" " data-id="shards/Shards/Script/Error" data-name="shards::script::error">
+      <a href="../Shards/Script/Error.html">Error</a>
+
+    </li>
+
+</ul>
+
+
+    </li>
+
+  <li class="parent " data-id="shards/Shards/Spec" data-name="shards::spec">
+      <a href="../Shards/Spec.html">Spec</a>
+
+        <ul>
+
+  <li class=" " data-id="shards/Shards/Spec/Author" data-name="shards::spec::author">
+      <a href="../Shards/Spec/Author.html">Author</a>
+
+    </li>
+
+  <li class=" " data-id="shards/Shards/Spec/Library" data-name="shards::spec::library">
+      <a href="../Shards/Spec/Library.html">Library</a>
+
+    </li>
+
+</ul>
+
+
+    </li>
+
+  <li class=" " data-id="shards/Shards/Target" data-name="shards::target">
+      <a href="../Shards/Target.html">Target</a>
+
+    </li>
+
+  <li class=" " data-id="shards/Shards/Version" data-name="shards::version">
+      <a href="../Shards/Version.html">Version</a>
+
+    </li>
+
+  <li class=" " data-id="shards/Shards/VersionReq" data-name="shards::versionreq">
+      <a href="../Shards/VersionReq.html">VersionReq</a>
+
+    </li>
+
+  <li class=" " data-id="shards/Shards/Versions" data-name="shards::versions">
+      <a href="../Shards/Versions.html">Versions</a>
+
+    </li>
+
+</ul>
+
+
+    </li>
+
+  <li class="parent " data-id="shards/YAML" data-name="yaml">
+      <a href="../YAML.html">YAML</a>
+
+        <ul>
+
+  <li class=" " data-id="shards/YAML/PullParser" data-name="yaml::pullparser">
+      <a href="../YAML/PullParser.html">PullParser</a>
+
+    </li>
+
+</ul>
+
+
+    </li>
+
+</ul>
+
+  </div>
+</div>
+
+
+<div class="main-content">
+<h1 class="type-name">
+
+  <span class="kind">
+    struct
+  </span> Shards::<wbr>FossilBranchRef
+
+</h1>
+
+
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../Shards/FossilBranchRef.html">Shards::FossilBranchRef</a></li><li class="superclass"><a href="../Shards/FossilRef.html">Shards::FossilRef</a></li><li class="superclass"><a href="../Shards/Ref.html">Shards::Ref</a></li><li class="superclass">Struct</li><li class="superclass">Value</li><li class="superclass">Object</li></ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2>
+    <a id="defined-in" class="anchor" href="#defined-in">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Defined in:
+  </h2>
+
+
+      <a href="https://github.com/renich/shards/blob/df700315684e02b4b48c8fa0f3bd8e07b7a4a90a/src/resolvers/fossil.cr#L14" target="_blank">
+        resolvers/fossil.cr
+      </a>
+
+    <br/>
+
+
+
+
+
+
+
+  <h2>
+    <a id="constructors" class="anchor" href="#constructors">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructors
+  </h2>
+  <ul class="list-summary">
+
+      <li class="entry-summary">
+        <a href="#new%28branch%3AString%29-class-method" class="signature"><strong>.new</strong>(branch : String)</a>
+
+      </li>
+
+  </ul>
+
+
+
+
+
+
+
+  <h2>
+    <a id="instance-method-summary" class="anchor" href="#instance-method-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Summary
+  </h2>
+  <ul class="list-summary">
+
+      <li class="entry-summary">
+        <a href="#to_fossil_ref%3AString-instance-method" class="signature"><strong>#to_fossil_ref</strong> : String</a>
+
+      </li>
+
+      <li class="entry-summary">
+        <a href="#to_s%28io%29-instance-method" class="signature"><strong>#to_s</strong>(io)</a>
+
+      </li>
+
+      <li class="entry-summary">
+        <a href="#to_yaml%28yaml%29-instance-method" class="signature"><strong>#to_yaml</strong>(yaml)</a>
+
+      </li>
+
+  </ul>
+
+
+
+  <div class="methods-inherited">
+
+
+
+  <h3>Instance methods inherited from struct <code><a href="../Shards/FossilRef.html">Shards::FossilRef</a></code></h3>
+
+
+    <a href="../Shards/FossilRef.html#full_info-instance-method" class="tooltip">
+      <span>full_info</span>
+    full_info</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h3>Instance methods inherited from struct <code><a href="../Shards/Ref.html">Shards::Ref</a></code></h3>
+
+
+    <a href="../Shards/Ref.html#initialize-instance-method" class="tooltip">
+      <span>initialize</span>
+    initialize</a>
+
+
+
+
+
+
+  <h3>Constructor methods inherited from struct <code><a href="../Shards/Ref.html">Shards::Ref</a></code></h3>
+
+
+    <a href="../Shards/Ref.html#new-class-method" class="tooltip">
+      <span>new</span>
+    new</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+
+  <h2>
+    <a id="constructor-detail" class="anchor" href="#constructor-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructor Detail
+  </h2>
+
+    <div class="entry-detail" id="new(branch:String)-class-method">
+      <div class="signature">
+
+        def self.<strong>new</strong>(branch : String)
+
+        <a class="method-permalink" href="#new%28branch%3AString%29-class-method">#</a>
+      </div>
+
+      <br/>
+      <div>
+
+          [<a href="https://github.com/renich/shards/blob/df700315684e02b4b48c8fa0f3bd8e07b7a4a90a/src/resolvers/fossil.cr#L15" target="_blank">View source</a>]
+
+      </div>
+    </div>
+
+
+
+
+
+
+
+
+  <h2>
+    <a id="instance-method-detail" class="anchor" href="#instance-method-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Detail
+  </h2>
+
+    <div class="entry-detail" id="to_fossil_ref:String-instance-method">
+      <div class="signature">
+
+        def <strong>to_fossil_ref</strong> : String
+
+        <a class="method-permalink" href="#to_fossil_ref%3AString-instance-method">#</a>
+      </div>
+
+      <br/>
+      <div>
+
+          [<a href="https://github.com/renich/shards/blob/df700315684e02b4b48c8fa0f3bd8e07b7a4a90a/src/resolvers/fossil.cr#L18" target="_blank">View source</a>]
+
+      </div>
+    </div>
+
+    <div class="entry-detail" id="to_s(io)-instance-method">
+      <div class="signature">
+
+        def <strong>to_s</strong>(io)
+
+        <a class="method-permalink" href="#to_s%28io%29-instance-method">#</a>
+      </div>
+
+      <br/>
+      <div>
+
+          [<a href="https://github.com/renich/shards/blob/df700315684e02b4b48c8fa0f3bd8e07b7a4a90a/src/resolvers/fossil.cr#L22" target="_blank">View source</a>]
+
+      </div>
+    </div>
+
+    <div class="entry-detail" id="to_yaml(yaml)-instance-method">
+      <div class="signature">
+
+        def <strong>to_yaml</strong>(yaml)
+
+        <a class="method-permalink" href="#to_yaml%28yaml%29-instance-method">#</a>
+      </div>
+
+      <br/>
+      <div>
+
+          [<a href="https://github.com/renich/shards/blob/df700315684e02b4b48c8fa0f3bd8e07b7a4a90a/src/resolvers/fossil.cr#L26" target="_blank">View source</a>]
+
+      </div>
+    </div>
+
+
+
+
+</div>
+
+</body>
+</html>
