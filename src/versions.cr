@@ -166,6 +166,27 @@ module Shards
       versions.reject { |v| prerelease?(v.value) }
     end
 
+    # Filters an array of versions against a specific version requirement.
+    #
+    # This method takes a list of versions and selects only those that satisfy
+    # the provided requirement string (such as "~> 1.0", ">= 2.0.0").
+    #
+    # Parameters:
+    # * `versions` - The list of `Version` objects to filter.
+    # * `requirement` - The `VersionReq` object containing constraints to test against.
+    #
+    # Returns a new array of `Version` objects that match the requirement.
+    #
+    # ```
+    # req = Shards::VersionReq.new("~> 1.0")
+    #
+    # v1 = Shards::Version.new("1.0.0")
+    # v2 = Shards::Version.new("1.1.0")
+    # v3 = Shards::Version.new("2.0.0")
+    #
+    # versions = Shards::Versions.resolve([v1, v2, v3], req)
+    # versions.map(&.value) # => ["1.0.0", "1.1.0"]
+    # ```
     def self.resolve(versions : Array(Version), requirement : VersionReq)
       versions.select { |version| matches?(version, requirement) }
     end
