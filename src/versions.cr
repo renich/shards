@@ -171,26 +171,21 @@ module Shards
     end
 
     def self.matches?(version : Version, requirement : VersionReq)
-      requirement.patterns.all? do |pattern|
-        matches_single_pattern?(version, pattern)
+      requirement.parsed_patterns.all? do |parsed|
+        matches_parsed_pattern?(version, parsed)
       end
     end
 
-    private def self.matches_single_pattern?(version : Version, pattern : String)
-      case pattern
-      when "*", ""
+    private def self.matches_parsed_pattern?(version : Version, parsed : VersionReq::ParsedPattern)
+      case parsed[0]
+      when VersionReq::MatchKind::Any
         true
-      when /~>\s*([^\s]+)\d*/
-        ver = if idx = $1.rindex('.')
-                $1[0...idx]
-              else
-                $1
-              end
-        matches_approximate?(version.value, $1, ver)
-      when /\s*(~>|>=|<=|!=|>|<|=)\s*([^~<>=!\s]+)\s*/
-        matches_operator?(version.value, $1, $2)
+      when VersionReq::MatchKind::Approx
+        matches_approximate?(version.value, parsed[1], parsed[2])
+      when VersionReq::MatchKind::Op
+        matches_operator?(version.value, parsed[1], parsed[2])
       else
-        matches_operator?(version.value, "=", pattern)
+        false
       end
     end
 
