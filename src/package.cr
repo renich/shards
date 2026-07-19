@@ -142,7 +142,19 @@ module Shards
 
     def find_executable_file(install_path, name)
       each_executable_path(name) do |path|
-        return path if File.exists?(install_path.join(path))
+        full_path = install_path.join(path).expand
+        install_path_expanded = install_path.expand
+
+        safe = false
+        {% if flag?(:win32) %}
+          safe = full_path.to_s.starts_with?(install_path_expanded.to_s + "\\") || full_path.to_s.starts_with?(install_path_expanded.to_s + "/")
+        {% else %}
+          safe = full_path.to_s.starts_with?(install_path_expanded.to_s + "/")
+        {% end %}
+
+        if safe && File.exists?(full_path)
+          return path
+        end
       end
     end
 
