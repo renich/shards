@@ -54,6 +54,21 @@ module Shards
     end
 
     def install_path
+      path = Path[Shards.install_path, name].expand
+      base_path = Path[Shards.install_path].expand
+
+      path_str = path.to_s
+      base_path_str = base_path.to_s
+
+      {% if flag?(:win32) %}
+        path_str = path_str.tr('\\', '/')
+        base_path_str = base_path_str.tr('\\', '/')
+      {% end %}
+
+      unless path_str == base_path_str || path_str.starts_with?("#{base_path_str}/")
+        raise Shards::Error.new("Invalid package name: #{name.inspect} (path traversal detected)")
+      end
+
       File.join(Shards.install_path, name)
     end
 
