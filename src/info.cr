@@ -1,5 +1,17 @@
 require "./lock"
 
+# Represents the state of the `.shards.info` file located in the installation directory.
+#
+# This file tracks which shards and which exact versions are currently installed.
+#
+# ```
+# info = Shards::Info.new("lib")
+# info.reload
+#
+# if package = info.installed["kemal"]?
+#   puts "Kemal version #{package.version} is installed!"
+# end
+# ```
 class Shards::Info
   getter install_path : String
   getter installed = Hash(String, Package).new
