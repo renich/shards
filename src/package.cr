@@ -54,6 +54,17 @@ module Shards
     end
 
     def install_path
+      path = Path[Shards.install_path, name].expand
+      sandbox = Path[Shards.install_path].expand
+      path_str = path.to_s
+      sandbox_str = sandbox.to_s
+      {% if flag?(:win32) %}
+        path_str = path_str.tr('\\', '/')
+        sandbox_str = sandbox_str.tr('\\', '/')
+      {% end %}
+      unless path_str == sandbox_str || path_str.starts_with?("#{sandbox_str}/")
+        raise Error.new("Invalid package name: #{name.inspect}")
+      end
       File.join(Shards.install_path, name)
     end
 
