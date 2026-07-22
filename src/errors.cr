@@ -52,16 +52,21 @@ module Shards
       from = line_number - 3
       from = 0 if from < 0
 
+      max_line_len = line_number.to_s.size
+
       lines[from...line_number].each_with_index do |line, i|
-        io.puts "  #{from + i + 1}. #{line}"
+        current_line = from + i + 1
+        io.puts "  #{current_line.to_s.rjust(max_line_len)}. #{line}"
       end
 
       arrow = String.build do |s|
-        s << "     "
+        s << "  "
+        max_line_len.times { s << ' ' }
+        s << "  "
         (column_number - 1).times { s << ' ' }
         s << '^'
       end
-      io.puts arrow.colorize(:green).bold
+      io.puts arrow.colorize(:green).bold.toggle(Shards.colors?)
       io.puts
 
       io.flush
