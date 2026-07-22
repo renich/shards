@@ -88,10 +88,26 @@ module Shards
       versions.sort { |a, b| compare(a, b) }
     end
 
+    # Compares two version objects. See `compare(a : String, b : String)`.
     def self.compare(a : Version, b : Version)
       compare(a.value, b.value)
     end
 
+    # Compares two version strings for sorting.
+    #
+    # Note that this method returns `-1` when *a* is newer than *b*.
+    # Consequently, `Shards::Versions.sort` uses this to sort version arrays in
+    # descending order (newest first).
+    #
+    # Returns `-1` if *a* is newer than *b*.
+    # Returns `0` if *a* and *b* are equivalent.
+    # Returns `1` if *a* is older than *b*.
+    #
+    # ```
+    # Shards::Versions.compare("1.0.1", "1.0.0") # => -1
+    # Shards::Versions.compare("1.0.0", "1.0.1") # => 1
+    # Shards::Versions.compare("1.0.0", "1.0")   # => 0
+    # ```
     def self.compare(a : String, b : String)
       if a == b
         return 0
