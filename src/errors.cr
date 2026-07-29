@@ -49,15 +49,18 @@ module Shards
       io.puts
 
       lines = input.lines
-      from = line_number - 3
-      from = 0 if from < 0
+      to = {line_number, lines.size}.min
+      from = {to - 3, 0}.max
+      max_len = to.to_s.size
 
-      lines[from...line_number].each_with_index do |line, i|
-        io.puts "  #{from + i + 1}. #{line}"
+      lines[from...to].each_with_index do |line, i|
+        io.puts "  #{(from + i + 1).to_s.rjust(max_len)}. #{line}"
       end
 
       arrow = String.build do |s|
-        s << "     "
+        s << "  "
+        max_len.times { s << ' ' }
+        s << "  "
         (column_number - 1).times { s << ' ' }
         s << '^'
       end
