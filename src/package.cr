@@ -54,7 +54,20 @@ module Shards
     end
 
     def install_path
-      File.join(Shards.install_path, name)
+      path = File.join(Shards.install_path, name)
+      expanded_path = Path[path].expand.to_s
+      expanded_base = Path[Shards.install_path].expand.to_s
+
+      {% if flag?(:win32) %}
+        expanded_path = expanded_path.tr("\\", "/")
+        expanded_base = expanded_base.tr("\\", "/")
+      {% end %}
+
+      unless expanded_path.starts_with?(expanded_base + "/")
+        raise Shards::Error.new("Invalid package name: #{name.inspect} resolves outside of install path")
+      end
+
+      path
     end
 
     def install
