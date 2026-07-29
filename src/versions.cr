@@ -92,6 +92,17 @@ module Shards
       compare(a.value, b.value)
     end
 
+    # Compares two version strings for sorting in descending order (newest first).
+    #
+    # Note that this behaves inversely to a standard spaceship operator (`<=>`):
+    # it returns `-1` when `a` is newer than `b`, `1` when `a` is older than `b`,
+    # and `0` when they are equal.
+    #
+    # ```
+    # Shards::Versions.compare("2.0.0", "1.0.0") # => -1
+    # Shards::Versions.compare("1.0.0", "2.0.0") # => 1
+    # Shards::Versions.compare("1.0.0", "1.0.0") # => 0
+    # ```
     def self.compare(a : String, b : String)
       if a == b
         return 0
