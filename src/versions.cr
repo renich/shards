@@ -92,6 +92,22 @@ module Shards
       compare(a.value, b.value)
     end
 
+    # Compares two version strings `a` and `b` according to semantic versioning rules,
+    # with support for natural sorting and pre-releases.
+    #
+    # **Note on semantics:** This method intentionally inverts standard comparison semantics
+    # for sorting purposes (e.g., in `Shards::Versions.sort`). It returns `-1` when version `a` is
+    # considered *newer* than version `b`.
+    #
+    # - Returns `0` if `a` and `b` are equivalent.
+    # - Returns `-1` if `a` is newer than `b` (e.g., `1.1.0` vs `1.0.0`).
+    # - Returns `1` if `a` is older than `b` (e.g., `1.0.0` vs `1.1.0`).
+    #
+    # ```
+    # Shards::Versions.compare("1.2.0", "1.1.0") # => -1
+    # Shards::Versions.compare("1.0.0", "1.0.0") # => 0
+    # Shards::Versions.compare("1.0.0", "2.0.0") # => 1
+    # ```
     def self.compare(a : String, b : String)
       if a == b
         return 0
