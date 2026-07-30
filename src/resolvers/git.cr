@@ -365,7 +365,8 @@ module Shards
       command = "git config --get remote.origin.mirror"
       Log.debug { command }
 
-      output = Process.run(command, shell: true, output: :pipe, chdir: local_path) do |process|
+      args = Process.parse_arguments(command)
+      output = Process.run(args[0], args: args[1..], output: :pipe, chdir: local_path) do |process|
         process.output.gets_to_end
       end
 
@@ -441,7 +442,8 @@ module Shards
 
       output = capture ? IO::Memory.new : Process::Redirect::Close
       error = IO::Memory.new
-      status = Process.run(command, shell: true, output: output, error: error, chdir: path)
+      args = Process.parse_arguments(command)
+      status = Process.run(args[0], args: args[1..], output: output, error: error, chdir: path)
 
       if status.success?
         output.to_s if capture

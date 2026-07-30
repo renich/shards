@@ -114,7 +114,7 @@ module Shards
 
     protected def self.has_fossil_command?
       if @@has_fossil_command.nil?
-        @@has_fossil_command = (Process.run("fossil version", shell: true).success? rescue false)
+        @@has_fossil_command = (Process.run("fossil", ["version"]).success? rescue false)
       end
       @@has_fossil_command
     end
@@ -482,7 +482,8 @@ module Shards
       STDERR.flush
       output = capture ? IO::Memory.new : Process::Redirect::Close
       error = IO::Memory.new
-      status = Process.run(command, shell: true, output: output, error: error)
+      args = Process.parse_arguments(command)
+      status = Process.run(args[0], args: args[1..], output: output, error: error)
 
       if status.success?
         output.to_s if capture
