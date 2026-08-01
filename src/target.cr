@@ -1,6 +1,19 @@
 module Shards
+  # Represents a compilation target defined in the `shard.yml` manifest file.
+  #
+  # A target specifies an executable to be built from the shard's source code,
+  # including its name and the main entry point file.
+  #
+  # ```crystal
+  # target = Shards::Target.new("my_app", "src/my_app.cr")
+  # target.name # => "my_app"
+  # target.main # => "src/my_app.cr"
+  # ```
   class Target
+    # The name of the target executable.
     property name : String
+
+    # The main entry point file for the target (e.g., `src/my_app.cr`).
     property main : String
 
     def self.new(pull : YAML::PullParser) : self
