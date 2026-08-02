@@ -14,7 +14,25 @@ module Shards
       end
 
       def next
-        @segment, _, @str = @str.partition(NON_ALPHANUMERIC)
+        idx = -1
+        b = 0
+        skip = 0
+        @str.each_char do |c|
+          if !c.ascii_alphanumeric?
+            idx = b
+            skip = c.bytesize
+            break
+          end
+          b += c.bytesize
+        end
+
+        if idx >= 0
+          @segment = @str.byte_slice(0, idx)
+          @str = @str.byte_slice(idx + skip)
+        else
+          @segment = @str
+          @str = ""
+        end
         segment
       end
 
