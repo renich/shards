@@ -171,26 +171,31 @@ module Shards
     end
 
     def self.matches?(version : Version, requirement : VersionReq)
-      requirement.patterns.all? do |pattern|
-        matches_single_pattern?(version, pattern)
+      requirement.conditions.all? do |condition|
+        matches_condition?(version, condition)
       end
     end
 
-    private def self.matches_single_pattern?(version : Version, pattern : String)
-      case pattern
-      when "*", ""
+    private def self.matches_condition?(version : Version, condition : VersionReq::Condition)
+      case condition.op
+      when VersionReq::Op::Any
         true
-      when /~>\s*([^\s]+)\d*/
-        ver = if idx = $1.rindex('.')
-                $1[0...idx]
-              else
-                $1
-              end
-        matches_approximate?(version.value, $1, ver)
-      when /\s*(~>|>=|<=|!=|>|<|=)\s*([^~<>=!\s]+)\s*/
-        matches_operator?(version.value, $1, $2)
+      when VersionReq::Op::Approx
+        matches_approximate?(version.value, condition.req, condition.ver.not_nil!)
+      when VersionReq::Op::Gte
+        compare(version.value, condition.req) <= 0
+      when VersionReq::Op::Lte
+        compare(version.value, condition.req) >= 0
+      when VersionReq::Op::Gt
+        compare(version.value, condition.req) < 0
+      when VersionReq::Op::Lt
+        compare(version.value, condition.req) > 0
+      when VersionReq::Op::Eq
+        compare(version.value, condition.req) == 0
+      when VersionReq::Op::Neq
+        compare(version.value, condition.req) != 0
       else
-        matches_operator?(version.value, "=", pattern)
+        false
       end
     end
 
@@ -198,23 +203,6 @@ module Shards
       version.starts_with?(ver) &&
         !version[ver.size]?.try(&.ascii_alphanumeric?) &&
         (compare(version, requirement) <= 0)
-    end
-
-    private def self.matches_operator?(version, operator, requirement)
-      case operator
-      when ">="
-        compare(version, requirement) <= 0
-      when "<="
-        compare(version, requirement) >= 0
-      when ">"
-        compare(version, requirement) < 0
-      when "<"
-        compare(version, requirement) > 0
-      when "!="
-        compare(version, requirement) != 0
-      else
-        compare(version, requirement) == 0
-      end
     end
   end
 end
