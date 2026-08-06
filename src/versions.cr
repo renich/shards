@@ -88,10 +88,30 @@ module Shards
       versions.sort { |a, b| compare(a, b) }
     end
 
+    # Compares two versions.
+    #
+    # Returns `1` when `a` is newer than `b` (`a > b`), `0` if they are equal,
+    # and `-1` if `a` is older than `b` (`a < b`).
+    #
+    # ```
+    # Shards::Versions.compare(Shards::Version.new("2.0.0"), Shards::Version.new("1.0.0")) # => 1
+    # Shards::Versions.compare(Shards::Version.new("1.0.0"), Shards::Version.new("2.0.0")) # => -1
+    # Shards::Versions.compare(Shards::Version.new("1.0.0"), Shards::Version.new("1.0.0")) # => 0
+    # ```
     def self.compare(a : Version, b : Version)
       compare(a.value, b.value)
     end
 
+    # Compares two version strings.
+    #
+    # Returns `1` when `a` is newer than `b` (`a > b`), `0` if they are equal,
+    # and `-1` if `a` is older than `b` (`a < b`).
+    #
+    # ```
+    # Shards::Versions.compare("2.0.0", "1.0.0") # => 1
+    # Shards::Versions.compare("1.0.0", "2.0.0") # => -1
+    # Shards::Versions.compare("1.0.0", "1.0.0") # => 0
+    # ```
     def self.compare(a : String, b : String)
       if a == b
         return 0
