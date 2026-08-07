@@ -177,20 +177,31 @@ module Shards
     end
 
     private def self.matches_single_pattern?(version : Version, pattern : String)
-      case pattern
-      when "*", ""
+      p = pattern.strip
+      if p.empty? || p == "*"
         true
-      when /~>\s*([^\s]+)\d*/
-        ver = if idx = $1.rindex('.')
-                $1[0...idx]
+      elsif p.starts_with?("~>")
+        req = p[2..].strip
+        ver = if idx = req.rindex('.')
+                req[0...idx]
               else
-                $1
+                req
               end
-        matches_approximate?(version.value, $1, ver)
-      when /\s*(~>|>=|<=|!=|>|<|=)\s*([^~<>=!\s]+)\s*/
-        matches_operator?(version.value, $1, $2)
+        matches_approximate?(version.value, req, ver)
+      elsif p.starts_with?(">=")
+        matches_operator?(version.value, ">=", p[2..].strip)
+      elsif p.starts_with?("<=")
+        matches_operator?(version.value, "<=", p[2..].strip)
+      elsif p.starts_with?("!=")
+        matches_operator?(version.value, "!=", p[2..].strip)
+      elsif p.starts_with?(">")
+        matches_operator?(version.value, ">", p[1..].strip)
+      elsif p.starts_with?("<")
+        matches_operator?(version.value, "<", p[1..].strip)
+      elsif p.starts_with?("=")
+        matches_operator?(version.value, "=", p[1..].strip)
       else
-        matches_operator?(version.value, "=", pattern)
+        matches_operator?(version.value, "=", p)
       end
     end
 
