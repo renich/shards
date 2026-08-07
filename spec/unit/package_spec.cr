@@ -81,5 +81,31 @@ module Shards
 
       File.symlink?(install_path("library")).should be_true
     end
+
+    describe "#find_executable_file" do
+      it "prevents path traversal outside bin/" do
+        package = Package.new("library", resolver("library"), version "1.2.3")
+
+        expect_raises(Shards::Error, "Executable name cannot traverse outside the bin/ directory or contain invalid characters") do
+          package.find_executable_file(Path["/tmp"], "../../../etc/passwd")
+        end
+
+        expect_raises(Shards::Error, "Executable name cannot traverse outside the bin/ directory or contain invalid characters") do
+          package.find_executable_file(Path["/tmp"], "foo/bar")
+        end
+
+        expect_raises(Shards::Error, "Executable name cannot traverse outside the bin/ directory or contain invalid characters") do
+          package.find_executable_file(Path["/tmp"], "foo\0bar")
+        end
+
+        expect_raises(Shards::Error, "Executable name cannot traverse outside the bin/ directory or contain invalid characters") do
+          package.find_executable_file(Path["/tmp"], ".")
+        end
+
+        expect_raises(Shards::Error, "Executable name cannot traverse outside the bin/ directory or contain invalid characters") do
+          package.find_executable_file(Path["/tmp"], "..")
+        end
+      end
+    end
   end
 end
