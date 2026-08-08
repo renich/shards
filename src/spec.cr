@@ -49,7 +49,20 @@ module Shards
       io << name << " " << version
     end
 
-    def self.from_file(path, validate = false)
+    # Parses a `Shards::Spec` from a `shard.yml` file.
+    #
+    # If `path` is a directory, it looks for a `shard.yml` inside it.
+    # If `validate` is true, strict validation is applied to the parsed spec.
+    #
+    # ```
+    # spec = Shards::Spec.from_file("shard.yml")
+    # puts spec.name
+    # puts spec.version
+    # ```
+    #
+    # Raises `Error` if the file doesn't exist.
+    # Raises `ParseError` if the file has invalid syntax.
+    def self.from_file(path : String, validate : Bool = false)
       path = File.join(path, SPEC_FILENAME) if File.directory?(path)
       raise Error.new("Missing #{File.basename(path)}") unless File.exists?(path)
       from_yaml(File.read(path), path, validate)
