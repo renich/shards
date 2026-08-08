@@ -1,0 +1,87 @@
+--- src/versions.cr
++++ src/versions.cr
+@@ -11,21 +11,23 @@
+       end
+
+       def next
+-        i = 0
+-        len = @str.bytesize
+-        while i < len && @str[i].ascii_alphanumeric?
+-          i += @str[i].bytesize
++        # Use Char::Reader for safe multi-byte character iteration and byte offset tracking
++        reader = Char::Reader.new(@str)
++        while reader.has_next? && reader.current_char.ascii_alphanumeric?
++          reader.next_char
+         end
++        pos_i = reader.pos
+
+-        if i == len
++        if pos_i == @str.bytesize
+           @segment = @str
+           @str = ""
+         else
+-          @segment = @str.byte_slice(0, i)
++          @segment = @str.byte_slice(0, pos_i)
+
+-          j = i
+-          while j < len && !@str[j].ascii_alphanumeric?
+-            j += @str[j].bytesize
++          while reader.has_next? && !reader.current_char.ascii_alphanumeric?
++            reader.next_char
+           end
+-          @str = @str.byte_slice(j)
++          pos_j = reader.pos
++          @str = @str.byte_slice(pos_j)
+         end
+
+@@ -58,30 +60,26 @@
+
+           # Extract next chars and digits for a
+-          i = 0
+-          len_a = a.bytesize
+-          while i < len_a && !a[i].ascii_number?
+-            i += a[i].bytesize
++          reader_a = Char::Reader.new(a)
++          while reader_a.has_next? && !reader_a.current_char.ascii_number?
++            reader_a.next_char
+           end
+-          a_chars = a.byte_slice(0, i)
+-          j = i
+-          while j < len_a && a[j].ascii_number?
+-            j += a[j].bytesize
++          pos_i_a = reader_a.pos
++          a_chars = a.byte_slice(0, pos_i_a)
++          while reader_a.has_next? && reader_a.current_char.ascii_number?
++            reader_a.next_char
+           end
+-          a_digits = a.byte_slice(i, j - i)
+-          a = a.byte_slice(j)
++          pos_j_a = reader_a.pos
++          a_digits = a.byte_slice(pos_i_a, pos_j_a - pos_i_a)
++          a = a.byte_slice(pos_j_a)
+
+           # Extract next chars and digits for b
+-          i = 0
+-          len_b = b.bytesize
+-          while i < len_b && !b[i].ascii_number?
+-            i += b[i].bytesize
++          reader_b = Char::Reader.new(b)
++          while reader_b.has_next? && !reader_b.current_char.ascii_number?
++            reader_b.next_char
+           end
+-          b_chars = b.byte_slice(0, i)
+-          j = i
+-          while j < len_b && b[j].ascii_number?
+-            j += b[j].bytesize
++          pos_i_b = reader_b.pos
++          b_chars = b.byte_slice(0, pos_i_b)
++          while reader_b.has_next? && reader_b.current_char.ascii_number?
++            reader_b.next_char
+           end
+-          b_digits = b.byte_slice(i, j - i)
+-          b = b.byte_slice(j)
++          pos_j_b = reader_b.pos
++          b_digits = b.byte_slice(pos_i_b, pos_j_b - pos_i_b)
++          b = b.byte_slice(pos_j_b)
+
+           ret = a_chars <=> b_chars

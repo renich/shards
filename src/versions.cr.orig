@@ -2,6 +2,9 @@ module Shards
   module Versions
     # :nodoc:
     struct Segment
+      NON_ALPHANUMERIC                           = /[^a-zA-Z0-9]/
+      NATURAL_SORT_EXTRACT_NEXT_CHARS_AND_DIGITS = /^(\D*)(\d*)(.*)$/
+
       protected getter! segment : String
 
       def initialize(@str : String)
@@ -11,25 +14,7 @@ module Shards
       end
 
       def next
-        reader = Char::Reader.new(@str)
-        while reader.has_next? && reader.current_char.ascii_alphanumeric?
-          reader.next_char
-        end
-        pos_i = reader.pos
-
-        if pos_i == @str.bytesize
-          @segment = @str
-          @str = ""
-        else
-          @segment = @str.byte_slice(0, pos_i)
-
-          while reader.has_next? && !reader.current_char.ascii_alphanumeric?
-            reader.next_char
-          end
-          pos_j = reader.pos
-          @str = @str.byte_slice(pos_j)
-        end
-
+        @segment, _, @str = @str.partition(NON_ALPHANUMERIC)
         segment
       end
 
@@ -56,35 +41,11 @@ module Shards
         loop do
           return 0 if a.empty? && b.empty?
 
-          # Extract next chars and digits for a
-          reader_a = Char::Reader.new(a)
-          while reader_a.has_next? && !reader_a.current_char.ascii_number?
-            reader_a.next_char
-          end
-          pos_i_a = reader_a.pos
-          a_chars = a.byte_slice(0, pos_i_a)
+          a =~ NATURAL_SORT_EXTRACT_NEXT_CHARS_AND_DIGITS
+          a_chars, a_digits, a = $1, $2, $3
 
-          while reader_a.has_next? && reader_a.current_char.ascii_number?
-            reader_a.next_char
-          end
-          pos_j_a = reader_a.pos
-          a_digits = a.byte_slice(pos_i_a, pos_j_a - pos_i_a)
-          a = a.byte_slice(pos_j_a)
-
-          # Extract next chars and digits for b
-          reader_b = Char::Reader.new(b)
-          while reader_b.has_next? && !reader_b.current_char.ascii_number?
-            reader_b.next_char
-          end
-          pos_i_b = reader_b.pos
-          b_chars = b.byte_slice(0, pos_i_b)
-
-          while reader_b.has_next? && reader_b.current_char.ascii_number?
-            reader_b.next_char
-          end
-          pos_j_b = reader_b.pos
-          b_digits = b.byte_slice(pos_i_b, pos_j_b - pos_i_b)
-          b = b.byte_slice(pos_j_b)
+          b =~ NATURAL_SORT_EXTRACT_NEXT_CHARS_AND_DIGITS
+          b_chars, b_digits, b = $1, $2, $3
 
           ret = a_chars <=> b_chars
           return ret unless ret == 0
@@ -216,47 +177,21 @@ module Shards
     end
 
     private def self.matches_single_pattern?(version : Version, pattern : String)
-      pattern = pattern.strip
-      return true if pattern.empty? || pattern == "*"
-
-      if pattern.starts_with?("~>")
-        req = pattern[2..].lstrip
-        req = req.split(' ', 2, remove_empty: true).first? || ""
-        ver = if idx = req.rindex('.')
-                req[0...idx]
+      case pattern
+      when "*", ""
+        true
+      when /~>\s*([^\s]+)\d*/
+        ver = if idx = $1.rindex('.')
+                $1[0...idx]
               else
-                req
+                $1
               end
-        return matches_approximate?(version.value, req, ver)
+        matches_approximate?(version.value, $1, ver)
+      when /\s*(~>|>=|<=|!=|>|<|=)\s*([^~<>=!\s]+)\s*/
+        matches_operator?(version.value, $1, $2)
+      else
+        matches_operator?(version.value, "=", pattern)
       end
-
-      if pattern.starts_with?(">=") || pattern.starts_with?("<=") || pattern.starts_with?("!=")
-        req = pattern[2..].lstrip
-        idx = -1
-        req.each_char_with_index do |c, i|
-          if c == '~' || c == '<' || c == '>' || c == '=' || c == '!' || c == ' '
-            idx = i
-            break
-          end
-        end
-        req = idx >= 0 ? req[0...idx] : req
-        return matches_operator?(version.value, pattern[0..1], req)
-      end
-
-      if pattern.starts_with?(">") || pattern.starts_with?("<") || pattern.starts_with?("=")
-        req = pattern[1..].lstrip
-        idx = -1
-        req.each_char_with_index do |c, i|
-          if c == '~' || c == '<' || c == '>' || c == '=' || c == '!' || c == ' '
-            idx = i
-            break
-          end
-        end
-        req = idx >= 0 ? req[0...idx] : req
-        return matches_operator?(version.value, pattern[0..0], req)
-      end
-
-      matches_operator?(version.value, "=", pattern)
     end
 
     private def self.matches_approximate?(version, requirement, ver)
