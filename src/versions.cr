@@ -166,7 +166,19 @@ module Shards
       versions.reject { |v| prerelease?(v.value) }
     end
 
-    def self.resolve(versions : Array(Version), requirement : VersionReq)
+    # Resolves a collection of versions against a version requirement.
+    #
+    # Filters the given array of *versions*, returning a new array containing
+    # only the versions that satisfy the given *requirement*.
+    #
+    # ```
+    # versions = [Shards::Version.new("1.0.0"), Shards::Version.new("1.2.0"), Shards::Version.new("2.0.0")]
+    # requirement = Shards::VersionReq.new("~> 1.0.0")
+    #
+    # Shards::Versions.resolve(versions, requirement)
+    # # => [Shards::Version(@value="1.0.0"), Shards::Version(@value="1.2.0")]
+    # ```
+    def self.resolve(versions : Array(Version), requirement : VersionReq) : Array(Version)
       versions.select { |version| matches?(version, requirement) }
     end
 
