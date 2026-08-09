@@ -2,8 +2,7 @@ module Shards
   module Versions
     # :nodoc:
     struct Segment
-      NON_ALPHANUMERIC                           = /[^a-zA-Z0-9]/
-      NATURAL_SORT_EXTRACT_NEXT_CHARS_AND_DIGITS = /^(\D*)(\d*)(.*)$/
+      NON_ALPHANUMERIC = /[^a-zA-Z0-9]/
 
       protected getter! segment : String
 
@@ -41,11 +40,8 @@ module Shards
         loop do
           return 0 if a.empty? && b.empty?
 
-          a =~ NATURAL_SORT_EXTRACT_NEXT_CHARS_AND_DIGITS
-          a_chars, a_digits, a = $1, $2, $3
-
-          b =~ NATURAL_SORT_EXTRACT_NEXT_CHARS_AND_DIGITS
-          b_chars, b_digits, b = $1, $2, $3
+          a_chars, a_digits, a = split_chars_digits(a)
+          b_chars, b_digits, b = split_chars_digits(b)
 
           ret = a_chars <=> b_chars
           return ret unless ret == 0
@@ -61,6 +57,26 @@ module Shards
             return ret unless ret == 0
           end
         end
+      end
+
+      private def split_chars_digits(s : String)
+        reader = Char::Reader.new(s)
+
+        while reader.has_next? && !reader.current_char.number?
+          reader.next_char
+        end
+        chars_len = reader.pos
+
+        while reader.has_next? && reader.current_char.number?
+          reader.next_char
+        end
+        digits_len = reader.pos - chars_len
+
+        {
+          chars_len > 0 ? s.byte_slice(0, chars_len) : "",
+          digits_len > 0 ? s.byte_slice(chars_len, digits_len) : "",
+          chars_len + digits_len < s.bytesize ? s.byte_slice(chars_len + digits_len) : "",
+        }
       end
 
       def only_zeroes?(&)
