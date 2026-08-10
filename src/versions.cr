@@ -2,7 +2,6 @@ module Shards
   module Versions
     # :nodoc:
     struct Segment
-      NON_ALPHANUMERIC                           = /[^a-zA-Z0-9]/
       NATURAL_SORT_EXTRACT_NEXT_CHARS_AND_DIGITS = /^(\D*)(\d*)(.*)$/
 
       protected getter! segment : String
@@ -14,7 +13,19 @@ module Shards
       end
 
       def next
-        @segment, _, @str = @str.partition(NON_ALPHANUMERIC)
+        reader = Char::Reader.new(@str)
+        while reader.pos < @str.bytesize && reader.current_char.ascii_alphanumeric?
+          reader.next_char
+        end
+
+        if reader.pos == @str.bytesize
+          @segment = @str
+          @str = ""
+        else
+          @segment = @str.byte_slice(0, reader.pos)
+          @str = @str.byte_slice(reader.pos + reader.current_char.bytesize)
+        end
+
         segment
       end
 
