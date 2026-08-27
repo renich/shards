@@ -420,7 +420,7 @@ module Shards
     end
 
     private def capture(command, path = local_path)
-      run(command, capture: true, path: path).not_nil!
+      run(command, capture: true, path: path).to_s
     end
 
     private def run(command, path = local_path, capture = false)
