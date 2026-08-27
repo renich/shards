@@ -84,6 +84,12 @@ module Shards
       end
     end
 
+    # Sorts an array of versions according to semantic and natural versioning rules.
+    #
+    # ```
+    # versions = ["1.0.0-alpha", "0.20.1", "1.0.0", "1.0.0-rc2"]
+    # Shards::Versions.sort(versions)
+    # ```
     def self.sort(versions)
       versions.sort { |a, b| compare(a, b) }
     end
