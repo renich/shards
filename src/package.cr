@@ -44,6 +44,19 @@ module Shards
       end
     end
 
+    # Checks if the package is currently installed.
+    #
+    # A package is considered installed if its installation path exists
+    # and the installed version and resolver match this package's configuration.
+    #
+    # ```
+    # package = Shards::Package.new("foo", resolver, version)
+    # if package.installed?
+    #   puts "Package is already installed!"
+    # end
+    # ```
+    #
+    # Returns `true` if installed, `false` otherwise.
     def installed?
       return false unless File.exists?(install_path)
       if installed = Shards.info.installed[name]?
