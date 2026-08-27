@@ -2,9 +2,6 @@ module Shards
   module Versions
     # :nodoc:
     struct Segment
-      NON_ALPHANUMERIC                           = /[^a-zA-Z0-9]/
-      NATURAL_SORT_EXTRACT_NEXT_CHARS_AND_DIGITS = /^(\D*)(\d*)(.*)$/
-
       protected getter! segment : String
 
       def initialize(@str : String)
@@ -14,8 +11,24 @@ module Shards
       end
 
       def next
-        @segment, _, @str = @str.partition(NON_ALPHANUMERIC)
+        if (match = next_non_alphanumeric(@str))
+          byte_index, char_bytesize = match
+          @segment = @str.byte_slice(0, byte_index)
+          @str = @str.byte_slice(byte_index + char_bytesize)
+        else
+          @segment = @str
+          @str = ""
+        end
         segment
+      end
+
+      private def next_non_alphanumeric(str)
+        byte_index = 0
+        str.each_char do |c|
+          return {byte_index, c.bytesize} if !c.ascii_alphanumeric?
+          byte_index += c.bytesize
+        end
+        nil
       end
 
       def empty?
@@ -41,11 +54,8 @@ module Shards
         loop do
           return 0 if a.empty? && b.empty?
 
-          a =~ NATURAL_SORT_EXTRACT_NEXT_CHARS_AND_DIGITS
-          a_chars, a_digits, a = $1, $2, $3
-
-          b =~ NATURAL_SORT_EXTRACT_NEXT_CHARS_AND_DIGITS
-          b_chars, b_digits, b = $1, $2, $3
+          a_chars, a_digits, a = split_chars_digits(a)
+          b_chars, b_digits, b = split_chars_digits(b)
 
           ret = a_chars <=> b_chars
           return ret unless ret == 0
@@ -61,6 +71,26 @@ module Shards
             return ret unless ret == 0
           end
         end
+      end
+
+      private def split_chars_digits(str)
+        chars_end_byte = 0
+        str.each_char do |c|
+          break if c.ascii_number?
+          chars_end_byte += c.bytesize
+        end
+
+        digits_end_byte = chars_end_byte
+        str.byte_slice(chars_end_byte).each_char do |c|
+          break unless c.ascii_number?
+          digits_end_byte += c.bytesize
+        end
+
+        {
+          str.byte_slice(0, chars_end_byte),
+          str.byte_slice(chars_end_byte, digits_end_byte - chars_end_byte),
+          str.byte_slice(digits_end_byte),
+        }
       end
 
       def only_zeroes?(&)
