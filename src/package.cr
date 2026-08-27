@@ -154,9 +154,27 @@ module Shards
     end
 
     def find_executable_file(install_path, name)
+      unless valid_executable_name?(name)
+        raise Shards::Error.new("Executable name cannot traverse outside the bin/ directory or contain invalid characters")
+      end
+
       each_executable_path(name) do |path|
         return path if File.exists?(install_path.join(path))
       end
+    end
+
+    private def valid_executable_name?(name)
+      {% if flag?(:win32) %}
+        if name.includes?('\\') || name.includes?(':')
+          return false
+        end
+      {% end %}
+
+      if name.includes?('/') || name.includes?('\0') || name == "." || name == ".."
+        return false
+      end
+
+      true
     end
 
     private def each_executable_path(name, &)
