@@ -4,7 +4,7 @@ module Shards
   # A target specifies an executable to be built from the shard's source code,
   # including its name and the main entry point file.
   #
-  # ```crystal
+  # ```
   # target = Shards::Target.new("my_app", "src/my_app.cr")
   # target.name # => "my_app"
   # target.main # => "src/my_app.cr"
@@ -20,6 +20,10 @@ module Shards
       start_pos = pull.location
       name = pull.read_scalar
       main = nil
+
+      if !valid_target_name?(name)
+        raise YAML::ParseException.new("Invalid target name: #{name.inspect} (path traversal detected)", *start_pos)
+      end
 
       pull.each_in_mapping do
         case pull.read_scalar
@@ -38,6 +42,20 @@ module Shards
     end
 
     def initialize(@name, @main)
+    end
+
+    private def self.valid_target_name?(name)
+      {% if flag?(:win32) %}
+        if name.includes?('\\') || name.includes?(':')
+          return false
+        end
+      {% end %}
+
+      if name.includes?('/') || name.includes?('\0') || name == "." || name == ".."
+        return false
+      end
+
+      true
     end
   end
 end
