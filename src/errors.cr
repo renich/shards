@@ -52,12 +52,18 @@ module Shards
       from = line_number - 3
       from = 0 if from < 0
 
+      max_line_len = line_number.to_s.size
+
       lines[from...line_number].each_with_index do |line, i|
-        io.puts "  #{from + i + 1}. #{line}"
+        current_line = (from + i + 1).to_s
+        io << "  "
+        (max_line_len - current_line.size).times { io << ' ' }
+        io << current_line << ". " << line << '\n'
       end
 
+      arrow_offset = 2 + max_line_len + 2
       arrow = String.build do |s|
-        s << "     "
+        arrow_offset.times { s << ' ' }
         (column_number - 1).times { s << ' ' }
         s << '^'
       end
