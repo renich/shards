@@ -16,3 +16,7 @@ This file contains CRITICAL performance learnings only (e.g., unique bottlenecks
 ## 2024-06-25 - Caching Version Requirements Parsing
 **Learning:** Evaluated requirement patterns inside `Shards::VersionReq` were parsed via RegEx inside `#matches?`, triggering expensive RegEx computations in a loop. By parsing patterns into `Condition` structs with explicitly typed enums (`Op`) during initialization, we reduced `VersionReq matches` timing from ~17.01µs to ~8.51µs, resulting in ~2x speedup in parsing and matching IPS.
 **Action:** When working on constraints matchers that execute in O(N) loops, shift all Regex and complex string parsing to the initialization phase and convert them into rigidly typed data structures.
+
+## 2024-08-28 - Optimize VersionReq Parsing
+**Learning:** Evaluated requirement string parsing inside `Shards::VersionReq#initialize`. It utilized regular expressions with dynamic match extraction (`/~>\s*([^\s]+)\d*/`, etc.). Replacing this with a manual string parsing algorithm using `Char::Reader` and zero-allocation `String#byte_slice` resulted in a ~4x speed improvement and fewer memory allocations.
+**Action:** When working on tight loop or initialization logic that relies on RegEx string processing, look for opportunities to perform manual iteration using `Char::Reader` to parse prefixes, symbols, and substring segments.
