@@ -96,6 +96,18 @@ module Shards
       io << name << " (" << report_requirement << ")"
     end
 
+    # Checks if a given version satisfies this dependency's requirement.
+    #
+    # Parameters:
+    # - *version* (`Version`): The version to check against this dependency's requirement.
+    #
+    # Returns `true` if the version satisfies the requirement, `false` otherwise.
+    #
+    # ```
+    # dep = Shards::Dependency.new("foo", resolver, Shards::VersionReq.new(">= 1.0.0"))
+    # dep.matches?(Shards::Version.new("1.2.0")) # => true
+    # dep.matches?(Shards::Version.new("0.9.0")) # => false
+    # ```
     def matches?(version : Version)
       case req = requirement
       when Ref
