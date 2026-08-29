@@ -81,7 +81,7 @@ module Shards
         end
 
         digits_end_byte = chars_end_byte
-        str.byte_slice(chars_end_byte).each_char do |c|
+        Char::Reader.new(str, chars_end_byte).each do |c|
           break unless c.ascii_number?
           digits_end_byte += c.bytesize
         end
