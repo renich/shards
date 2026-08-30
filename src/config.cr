@@ -15,6 +15,18 @@ module Shards
   VERSION_AT_HG_COMMIT     = /^(\d+[-.][-.a-zA-Z\d]+)\+hg\.commit\.([0-9a-f]+)$/
   VERSION_AT_FOSSIL_COMMIT = /^(\d+[-.][-.a-zA-Z\d]+)\+fossil\.commit\.([0-9a-f]+)$/
 
+  # Returns the path to the global shards cache directory.
+  #
+  # This resolves the cache directory by looking at environment variables
+  # (`SHARDS_CACHE_PATH`, `XDG_CACHE_HOME`, etc.) or defaulting to a standard
+  # user cache directory (`~/.cache/shards`).
+  #
+  # Returns a `String` containing the absolute path to the cache directory.
+  #
+  # ```
+  # cache_dir = Shards.cache_path
+  # puts "Cache is located at: #{cache_dir}"
+  # ```
   def self.cache_path
     @@cache_path ||= find_or_create_cache_path
   end
